@@ -22,10 +22,10 @@ public class MainActivity extends AppCompatActivity {
 
     EditText mName, mPhoneNumber;
     Button mAdd, mShowContacts;
-//    List contactNumbers;
+    //    List contactNumbers;
     // Request code for READ_CONTACTS. It can be any number > 0.
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
-    String searchQuery="";
+    String searchQuery = "";
     private static final String TAG = MainActivity.class.getName();
 
     @Override
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                 searchQuery = charSequence.toString();
-                if(searchQuery.length() > 3 ) {
+                if (searchQuery.length() > 3) {
                     searchContacts();
                 }
             }
@@ -63,14 +63,22 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 // Add a new student record
-                ContentValues values = new ContentValues();
-                values.put(Constants.COLUMN_NAME,mName.getText().toString());
-                values.put(Constants.COLUMN_PHONE, mPhoneNumber.getText().toString());
-                Uri uri = getContentResolver().insert(MyContactsProvider.CONTENT_URI, values);
-                Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+                String name = mName.getText().toString();
+                String phoneNumber = mPhoneNumber.getText().toString();
+                if (!name.trim().equals("") && !phoneNumber.trim().equals("")) {
+                    ContentValues values = new ContentValues();
+                    values.put(Constants.COLUMN_NAME, mName.getText().toString());
+                    values.put(Constants.COLUMN_PHONE, mPhoneNumber.getText().toString());
+                    Uri uri = getContentResolver().insert(MyContactsProvider.CONTENT_URI, values);
+                    if (uri != null) {
+                        Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+                    }
 
-                mName.setText("");
-                mPhoneNumber.setText("");
+                    mName.setText("");
+                    mPhoneNumber.setText("");
+                }else{
+                    Toast.makeText(getBaseContext(), "Empty fields!", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -84,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void searchContacts(){
+    private void searchContacts() {
 
         // Check the SDK version and whether the permission is already granted or not.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
@@ -100,9 +108,9 @@ public class MainActivity extends AppCompatActivity {
                             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
                                     + " LIKE ? ",
                             new String[]{"%" + searchQuery + "%"}, null);
-            Log.d( TAG, "cursor size:" + cursor.getCount());
+            Log.d(TAG, "cursor size:" + cursor.getCount());
             while (cursor.moveToNext()) {
-                Log.d( TAG, cursor.getString(1) + ": " + cursor.getString(0));
+                Log.d(TAG, cursor.getString(1) + ": " + cursor.getString(0));
                 mPhoneNumber.setText(cursor.getString(0));
             }
         }
