@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
 
     EditText mName, mPhoneNumber;
     Button mAdd, mShowContacts;
-    //    List contactNumbers;
     // Request code for READ_CONTACTS. It can be any number > 0.
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     String searchQuery = "";
